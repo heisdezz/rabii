@@ -15,7 +15,9 @@ export default function WatchScreen({ resp }: { resp: VideosResponse }) {
               <Link to="/app">Home</Link>
             </li>
             <li>
-              <Link to="/app/watch">Watch</Link>
+              <Link disabled to="/app/watch">
+                Watch
+              </Link>
             </li>
             <li className="truncate max-w-xs">{resp.title || "Video"}</li>
           </ul>

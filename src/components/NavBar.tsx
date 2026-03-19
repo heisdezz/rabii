@@ -3,7 +3,7 @@ import MenuBar from "./MenuBar";
 import SearchBar from "./Searchbar";
 import { IconUser } from "@tabler/icons-react";
 import { pb } from "#/client/pb";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 
 export default function MainNavbar() {
   const [isAuth, setIsAuth] = useState(pb.authStore.isValid);
@@ -26,20 +26,31 @@ export default function MainNavbar() {
         </div>
         <SearchBar />
         <div className="ml-auto flex items-center gap-2">
-          {isAuth ? (
-            <Link to="/app/profile" className="link link-icon">
-              <IconUser />
-            </Link>
-          ) : (
-            <>
-              <Link to="/auth/login" className="btn btn-ghost btn-sm">
-                Sign in
+          <ClientOnly
+            fallback={
+              <>
+                {" "}
+                <Link disabled to="/app/profile" className="link link-icon">
+                  <IconUser />
+                </Link>
+              </>
+            }
+          >
+            {isAuth ? (
+              <Link to="/app/profile" className="link link-icon">
+                <IconUser />
               </Link>
-              <Link to="/auth/sign-up" className="btn btn-primary btn-sm">
-                Sign up
-              </Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link to="/auth/login" className="btn btn-ghost btn-sm">
+                  Sign in
+                </Link>
+                <Link to="/auth/sign-up" className="btn btn-primary btn-sm">
+                  Sign up
+                </Link>
+              </>
+            )}
+          </ClientOnly>
         </div>
       </nav>
     </div>

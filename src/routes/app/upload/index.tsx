@@ -1,4 +1,8 @@
-import { ClientOnly, createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  ClientOnly,
+  createFileRoute,
+  useNavigate,
+} from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -27,7 +31,10 @@ function getVideoResolution(file: File): Promise<string> {
       else if (h >= 360) resolve("360p");
       else resolve("240p");
     };
-    vid.onerror = () => { URL.revokeObjectURL(url); resolve(""); };
+    vid.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve("");
+    };
     vid.src = url;
   });
 }
@@ -64,7 +71,10 @@ function RouteComponent() {
       const fd = new globalThis.FormData();
       fd.append("title", data.title);
       fd.append("description", data.description ?? "");
-      for (const tag of (data.tags ?? "").split(",").map((t) => t.trim()).filter(Boolean))
+      for (const tag of (data.tags ?? "")
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean))
         fd.append("tags", tag);
       fd.append("video", videoFile, videoFile.name);
       if (resolutionRef.current) fd.append("resolution", resolutionRef.current);
@@ -86,7 +96,9 @@ function RouteComponent() {
   const setVideoFileWithPreview = (file: File) => {
     setVideoFile(file);
     setVideoPreview(URL.createObjectURL(file));
-    getVideoResolution(file).then((r) => { resolutionRef.current = r; });
+    getVideoResolution(file).then((r) => {
+      resolutionRef.current = r;
+    });
   };
 
   const clearVideo = () => {

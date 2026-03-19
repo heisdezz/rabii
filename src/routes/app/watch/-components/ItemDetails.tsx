@@ -4,6 +4,7 @@ import { get_fiel_url } from "#/helpers/client";
 import { IconUser } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import type { VideoWithUser } from "../$videoid";
+import BookmarkButton from "./BookmarkButton";
 
 export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
   const thumbUrl = resp.thumbnail ? get_fiel_url(resp, resp.thumbnail) : null;
@@ -31,9 +32,12 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
 
       {/* Details */}
       <div className="p-4 sm:p-6 space-y-3 flex-1 min-w-0">
-        <h2 className="font-bold text-xl sm:text-2xl">
-          {resp.title || "Untitled"}
-        </h2>
+        <div className="flex items-start justify-between gap-3">
+          <h2 className="font-bold text-xl sm:text-2xl">
+            {resp.title || "Untitled"}
+          </h2>
+          <BookmarkButton id={resp.id} />
+        </div>
 
         {/* Owner info */}
         {user && (
