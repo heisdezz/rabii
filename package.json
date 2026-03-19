@@ -26,6 +26,7 @@
     "daisyui": "^5.5.19",
     "embla-carousel-react": "^8.6.0",
     "jotai": "^2.18.1",
+    "nitro": "^3.0.260311-beta",
     "pocketbase": "^0.26.8",
     "pocketbase-ts": "^1.6.2",
     "pocketbase-typegen": "^1.3.3",
