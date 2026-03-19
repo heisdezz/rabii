@@ -1,0 +1,3 @@
+interface Soso {
+  name: string;
+}
