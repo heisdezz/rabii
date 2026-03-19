@@ -2,7 +2,7 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { get_fiel_url } from "#/helpers/client";
 import { IconUser } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
+import { ClientOnly, Link } from "@tanstack/react-router";
 import type { VideoWithUser } from "../$videoid";
 import BookmarkButton from "./BookmarkButton";
 
@@ -11,6 +11,7 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
   const blurUrl = thumbUrl ?? "/dummy.jpg";
   const [expanded, setExpanded] = useState(false);
 
+  //@ts-ignore
   const user = resp.expand?.user;
   const avatarUrl = user?.avatar ? get_fiel_url(user, user.avatar) : null;
 
@@ -36,7 +37,9 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
           <h2 className="font-bold text-xl sm:text-2xl">
             {resp.title || "Untitled"}
           </h2>
-          <BookmarkButton id={resp.id} />
+          <ClientOnly>
+            <BookmarkButton id={resp.id} />
+          </ClientOnly>
         </div>
 
         {/* Owner info */}

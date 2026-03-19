@@ -130,14 +130,14 @@ export type UsersRecord = {
 	verified?: boolean
 }
 
-export type VideosRecord = {
+export type VideosRecord<Ttags = unknown> = {
 	created: IsoAutoDateString
 	description?: HTMLString
 	duration?: number
 	id: string
 	profile?: RecordIdString
 	resolution?: string
-	tags?: string
+	tags?: null | Ttags
 	thumbnail?: FileNameString
 	title?: string
 	updated: IsoAutoDateString
@@ -154,7 +154,7 @@ export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> &
 export type ProfileResponse<Texpand = unknown> = Required<ProfileRecord> & BaseSystemFields<Texpand>
 export type SavedResponse<Texpand = unknown> = Required<SavedRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
-export type VideosResponse<Texpand = unknown> = Required<VideosRecord> & BaseSystemFields<Texpand>
+export type VideosResponse<Ttags = unknown, Texpand = unknown> = Required<VideosRecord<Ttags>> & BaseSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
 
