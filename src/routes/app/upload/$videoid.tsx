@@ -13,6 +13,27 @@ import type { VideosResponse } from "pocketbase-types";
 import ThumbnailPicker from "./-components/ThumbnailPicker";
 import { get_fiel_url } from "#/helpers/client";
 
+function getVideoResolution(file: File): Promise<string> {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const vid = document.createElement("video");
+    vid.preload = "metadata";
+    vid.onloadedmetadata = () => {
+      URL.revokeObjectURL(url);
+      const h = vid.videoHeight;
+      if (h >= 2160) resolve("4K");
+      else if (h >= 1440) resolve("1440p");
+      else if (h >= 1080) resolve("1080p");
+      else if (h >= 720) resolve("720p");
+      else if (h >= 480) resolve("480p");
+      else if (h >= 360) resolve("360p");
+      else resolve("240p");
+    };
+    vid.onerror = () => { URL.revokeObjectURL(url); resolve(""); };
+    vid.src = url;
+  });
+}
+
 export const Route = createFileRoute("/app/upload/$videoid")({
   component: RouteComponent,
 });
@@ -32,6 +53,7 @@ function RouteComponent() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const thumbnailBlobRef = useRef<Blob | null>(null);
+  const resolutionRef = useRef<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: video, isLoading } = useQuery<VideosResponse>({
@@ -52,7 +74,7 @@ function RouteComponent() {
       form.reset({
         title: video.title ?? "",
         description: (video as any).description ?? "",
-        tags: (video as any).tags ?? "",
+        tags: [].concat((video as any).tags ?? []).join(", "),
       });
     }
   }, [video]);
@@ -60,6 +82,7 @@ function RouteComponent() {
   const setVideoFileWithPreview = (file: File) => {
     setVideoFile(file);
     setVideoPreview(URL.createObjectURL(file));
+    getVideoResolution(file).then((r) => { resolutionRef.current = r; });
   };
 
   const clearVideo = () => {
@@ -80,8 +103,12 @@ function RouteComponent() {
       const fd = new globalThis.FormData();
       fd.append("title", data.title);
       fd.append("description", data.description ?? "");
-      fd.append("tags", data.tags ?? "");
-      if (videoFile) fd.append("video", videoFile, videoFile.name);
+      for (const tag of (data.tags ?? "").split(",").map((t) => t.trim()).filter(Boolean))
+        fd.append("tags", tag);
+      if (videoFile) {
+        fd.append("video", videoFile, videoFile.name);
+        if (resolutionRef.current) fd.append("resolution", resolutionRef.current);
+      }
       if (thumbnailBlobRef.current) {
         fd.append("thumbnail", thumbnailBlobRef.current, "thumbnail.jpg");
       }

@@ -31,7 +31,9 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
 
       {/* Details */}
       <div className="p-4 sm:p-6 space-y-3 flex-1 min-w-0">
-        <h2 className="font-bold text-xl sm:text-2xl">{resp.title || "Untitled"}</h2>
+        <h2 className="font-bold text-xl sm:text-2xl">
+          {resp.title || "Untitled"}
+        </h2>
 
         {/* Owner info */}
         {user && (
@@ -42,7 +44,11 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
           >
             <div className="w-8 h-8 rounded-full bg-base-300 overflow-hidden ring-1 ring-base-content/10 shrink-0 flex items-center justify-center">
               {avatarUrl ? (
-                <img src={avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                <img
+                  src={avatarUrl}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <IconUser size={15} className="text-base-content/40" />
               )}
@@ -65,15 +71,17 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
         {resp.description ? (
           <div className="space-y-1">
             <div
-              className={`prose prose-sm prose-invert max-w-none opacity-80 overflow-hidden transition-all duration-300 ${
-                expanded ? "max-h-none " : "max-h-80"
+              className={`prose prose-sm prose-invert max-w-none opacity-80 overflow-hidden transition-[max-height] duration-500 ease-in-out ${
+                expanded ? "max-h-[2000px]" : "max-h-68"
               }`}
             >
               <ReactMarkdown>{resp.description}</ReactMarkdown>
             </div>
-            {!expanded && (
-              <div className="-mt-6 h-8 bg-gradient-to-t from-base-100/80 to-transparent pointer-events-none" />
-            )}
+            <div
+              className={`-mt-6 h-8 bg-gradient-to-t from-base-100/80 to-transparent pointer-events-none transition-opacity duration-300 ${
+                expanded ? "opacity-0" : "opacity-100"
+              }`}
+            />
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}
