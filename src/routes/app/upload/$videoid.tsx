@@ -63,7 +63,7 @@ function RouteComponent() {
 
   const { data: video, isLoading } = useQuery<VideosResponse>({
     queryKey: ["videos", videoid],
-    queryFn: () => pb.collection("videos").getOne(videoid),
+    queryFn: () => pb.collection("videos").getOne(videoid, { expand: "tags" }),
   });
 
   const existingVideoUrl = video?.video ? get_fiel_url(video, video.video as string) : null;
@@ -79,7 +79,10 @@ function RouteComponent() {
       form.reset({
         title: video.title ?? "",
         description: (video as any).description ?? "",
-        tags: [].concat((video as any).tags ?? []).filter(Boolean).join(","),
+        tags: ((video as any).expand?.tags ?? [])
+          .map((t: any) => t.name)
+          .filter(Boolean)
+          .join(","),
       });
     }
   }, [video]);
