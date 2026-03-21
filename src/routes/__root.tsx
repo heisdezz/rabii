@@ -11,6 +11,7 @@ import appCss from "../styles.css?url";
 import { useAutoRefresh, useSessionSync } from "../client/session";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Footer from "#/components/Footer";
+import Sidebar from "#/components/Sidebar";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,8 +63,17 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
-        <Footer />
+        <div className="drawer">
+          <input id="main-drawer" type="checkbox" className="drawer-toggle" />
+          <div className="drawer-content flex flex-col">
+            {children}
+            <Footer />
+          </div>
+          <div className="drawer-side z-30">
+            <label htmlFor="main-drawer" className="drawer-overlay" />
+            <Sidebar />
+          </div>
+        </div>
         <Toaster />
         <TanStackDevtools
           config={{

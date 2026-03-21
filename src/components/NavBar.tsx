@@ -24,7 +24,9 @@ export default function MainNavbar() {
             <span className="text-primary">Rab</span>ii
           </Link>
         </div>
-        <SearchBar />
+        <div className="hidden sm:flex flex-1">
+          <SearchBar />
+        </div>
         <div className="ml-auto flex items-center gap-2">
           <ClientOnly
             fallback={
