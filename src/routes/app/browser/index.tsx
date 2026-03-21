@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { pbQuery } from "@sergio9929/pb-query";
 import { pb } from "#/client/pb";
 import Card from "#/components/Card";
 import CardContainer from "#/components/layouts/CardContainer";
@@ -9,7 +10,8 @@ import BrowserFilters, {
   SORT_MAP,
   type SortOption,
 } from "./-components/BrowserFilters";
-import type { VideosResponse } from "pocketbase-types";
+import TagSearchBar from "./-components/TagSearchBar";
+import type { VideosRecord, VideosResponse } from "pocketbase-types";
 import { IconSearch } from "@tabler/icons-react";
 
 const PER_PAGE = 20;
@@ -18,14 +20,20 @@ export const Route = createFileRoute("/app/browser/")({
   component: RouteComponent,
   validateSearch: (
     search: Record<string, string>,
-  ): { query?: string; sort?: SortOption; page?: number } => {
+  ): { query?: string; sort?: SortOption; page?: number; tags?: string } => {
     const sort = search.sort as SortOption;
-    const validSort: SortOption[] = ["newest", "oldest", "title_asc", "title_desc"];
+    const validSort: SortOption[] = [
+      "newest",
+      "oldest",
+      "title_asc",
+      "title_desc",
+    ];
     const page = parseInt(search.page ?? "1", 10);
     return {
       query: search.query,
       sort: validSort.includes(sort) ? sort : "newest",
       page: page > 0 ? page : 1,
+      tags: search.tags || undefined,
     };
   },
   head: ({ match }) => {
@@ -47,23 +55,38 @@ export const Route = createFileRoute("/app/browser/")({
 });
 
 function RouteComponent() {
-  const { query, sort = "newest", page = 1 } = Route.useSearch();
+  const { query, sort = "newest", page = 1, tags } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
+  const selectedTags = tags ? tags.split(",").filter(Boolean) : [];
+
+  const setTags = (next: string[]) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        tags: next.length ? next.join(",") : undefined,
+        page: 1,
+      }),
+    });
+  };
+
   const videosQuery = useQuery({
-    queryKey: ["videos", "browser", query, sort, page],
-    queryFn: () =>
-      pb
+    queryKey: ["videos", "browser", query, sort, page, tags],
+    queryFn: () => {
+      const parts: string[] = [];
+      if (query) parts.push(`title ~ "${query}"`);
+      for (const id of selectedTags) parts.push(`tags ~ "${id}"`);
+      const filter = parts.join(" && ");
+
+      return pb
         .collection("videos")
-        .getList(page, PER_PAGE, {
-          sort: SORT_MAP[sort],
-          filter: query ? `title ~ "${query}"` : "",
-        })
+        .getList(page, PER_PAGE, { sort: SORT_MAP[sort], filter })
         .then((r) => ({
           items: r.items as VideosResponse[],
           totalPages: r.totalPages,
           totalItems: r.totalItems,
-        })),
+        }));
+    },
   });
 
   const goToPage = (p: number) => {
@@ -88,6 +111,8 @@ function RouteComponent() {
         )}
       </div>
 
+      <TagSearchBar selected={selectedTags} onChange={setTags} />
+
       <PageLoader query={videosQuery}>
         {({ items, totalPages, totalItems }) => (
           <div className="space-y-5">
@@ -110,7 +135,11 @@ function RouteComponent() {
                     <Card key={video.id} video={video} />
                   ))}
                 </CardContainer>
-                <Pagination page={page} total={totalPages} onChange={goToPage} />
+                <Pagination
+                  page={page}
+                  total={totalPages}
+                  onChange={goToPage}
+                />
               </>
             )}
           </div>

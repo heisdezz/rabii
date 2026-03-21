@@ -28,7 +28,7 @@ function RouteComponent() {
         return (
           <>
             {/*{JSON.stringify(resp)}*/}
-            <SavedVideos items={items as any} />;
+            <SavedVideos items={items as any} />
           </>
         );
       }}

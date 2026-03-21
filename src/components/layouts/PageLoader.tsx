@@ -65,7 +65,7 @@ export default function PageLoader<TData>(props: PageLoader<TData>) {
         {/*{showTitle && (
           <SimpleHeader title={props.title}>{props.headerActions}</SimpleHeader>
         )}*/}
-        <div className="mt-4 min-h-screen">
+        <div className="mt-4 min-h-screen animate-in fade-in slide-in-from-bottom-2 duration-500">
           {typeof props.children === "function"
             ? props.children(props.query.data) // ✅ fully inferred
             : props.children}

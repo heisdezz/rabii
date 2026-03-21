@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 
 const SearchSchema = z.object({
-  query: z.string().min(4, "Search query must be at least 4 characters"),
+  query: z.string().min(0, "Search query must be at least 2 characters"),
 });
 
 type SearchFormData = z.infer<typeof SearchSchema>;

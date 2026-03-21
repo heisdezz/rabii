@@ -48,14 +48,14 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
             </ClientOnly>
           </div>
         </div>
-        {(resp as any).tags?.length > 0 && (
+        {(resp as any).expand?.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1 pt-1">
-            {(resp as any).tags.map((tag: string) => (
+            {(resp as any).expand.tags.map((tag: { id: string; name: string }) => (
               <button
-                key={tag}
-                className="btn btn-xs ring  btn-secondary btn-soft fade"
+                key={tag.id}
+                className="btn btn-xs ring btn-secondary btn-soft fade"
               >
-                #{tag}
+                #{tag.name}
               </button>
             ))}
           </div>

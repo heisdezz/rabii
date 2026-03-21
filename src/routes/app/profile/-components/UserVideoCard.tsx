@@ -37,28 +37,28 @@ export default function UserVideoCard({ video }: { video: VideosResponse }) {
         </div>
       </Link>
 
-      {/* Edit button — top-right on hover */}
-      <Link
-        to="/app/upload/$videoid"
-        params={{ videoid: video.id }}
-        className="btn btn-circle btn-xs btn-neutral absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow"
-        title="Edit"
-      >
-        <IconEdit size={12} />
-      </Link>
-
       {/* Info */}
-      <div className="p-3">
-        <p className="font-medium text-sm line-clamp-2 leading-snug">
-          {video.title || "Untitled"}
-        </p>
-        <p className="text-xs text-base-content/40 mt-1">
-          {new Date(video.created).toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
-        </p>
+      <div className="p-3 flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="font-medium text-sm line-clamp-2 leading-snug">
+            {video.title || "Untitled"}
+          </p>
+          <p className="text-xs text-base-content/40 mt-1">
+            {new Date(video.created).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+        <Link
+          to="/app/upload/$videoid"
+          params={{ videoid: video.id }}
+          className="btn btn-sm btn-ghost btn-square shrink-0"
+          title="Edit"
+        >
+          <IconEdit size={15} />
+        </Link>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@
       "name": "rabii",
       "dependencies": {
         "@hookform/resolvers": "^5.2.2",
+        "@sergio9929/pb-query": "^0.3.3",
         "@tabler/icons-react": "^3.40.0",
         "@tailwindcss/vite": "^4.2.2",
         "@tanstack/react-devtools": "latest",
@@ -288,6 +289,8 @@
     "@rollup/rollup-win32-x64-gnu": ["@rollup/rollup-win32-x64-gnu@4.59.0", "", { "os": "win32", "cpu": "x64" }, "sha512-laBkYlSS1n2L8fSo1thDNGrCTQMmxjYY5G0WFWjFFYZkKPjsMBsgJfGf4TLxXrF6RyhI60L8TMOjBMvXiTcxeA=="],
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.59.0", "", { "os": "win32", "cpu": "x64" }, "sha512-2HRCml6OztYXyJXAvdDXPKcawukWY2GpR5/nxKp4iBgiO3wcoEGkAaqctIbZcNB6KlUQBIqt8VYkNSj2397EfA=="],
+
+    "@sergio9929/pb-query": ["@sergio9929/pb-query@0.3.3", "", {}, "sha512-oMdFVHZpFrSDjgjB8vwY6ak/2jkddLlk0Bd8XJbw2NXZcIpHdrhR2J3CNjACoucw2nDVqUV2W84sdsW7SIjHvw=="],
 
     "@solid-primitives/event-listener": ["@solid-primitives/event-listener@2.4.5", "", { "dependencies": { "@solid-primitives/utils": "^6.4.0" }, "peerDependencies": { "solid-js": "^1.6.12" } }, "sha512-nwRV558mIabl4yVAhZKY8cb6G+O1F0M6Z75ttTu5hk+SxdOnKSGj+eetDIu7Oax1P138ZdUU01qnBPR8rnxaEA=="],
 

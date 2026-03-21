@@ -26,7 +26,7 @@ function RouteComponent() {
   const resp = Route.useLoaderData();
   const { videoid } = Route.useParams();
 
-  const tags: string[] = (resp as any).tags ?? [];
+  const tags: string[] = ((resp as any).expand?.tags ?? []).map((t: { name: string }) => t.name).filter(Boolean);
 
   const new_resp = resp;
   return (
