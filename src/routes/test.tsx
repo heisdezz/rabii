@@ -12,6 +12,9 @@ function RouteComponent() {
   const query = useQuery({
     queryKey: ["test-api"],
     queryFn: () => {
+      return pb.send("liked/vw5b2yi4mhkiroy", {
+        method: "GET",
+      });
       const gen_id = `${user?.id + temp_video_id}`;
       return pb.send(`/saved/${gen_id}`, {
         method: "GET",

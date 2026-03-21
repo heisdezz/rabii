@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { IconPlayerPlay } from "@tabler/icons-react";
+import { IconPlayerPlay, IconThumbUp, IconThumbDown } from "@tabler/icons-react";
 import { get_fiel_url } from "#/helpers/client";
 import type { VideosResponse } from "pocketbase-types";
 
@@ -76,6 +76,22 @@ export default function Card({ video }: { video: VideosResponse }) {
               </span>
             )}
           </div>
+          {((video.likes_count ?? 0) > 0 || (video.dislikes_count ?? 0) > 0) && (
+            <div className="flex items-center gap-2 text-xs text-base-content/40">
+              {(video.likes_count ?? 0) > 0 && (
+                <span className="flex items-center gap-1">
+                  <IconThumbUp size={11} />
+                  {video.likes_count}
+                </span>
+              )}
+              {(video.dislikes_count ?? 0) > 0 && (
+                <span className="flex items-center gap-1">
+                  <IconThumbDown size={11} />
+                  {video.dislikes_count}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </Link>

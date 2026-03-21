@@ -5,6 +5,7 @@ import { IconUser } from "@tabler/icons-react";
 import { ClientOnly, Link } from "@tanstack/react-router";
 import type { VideoWithUser } from "../$videoid";
 import BookmarkButton from "./BookmarkButton";
+import LikeDislike from "#/components/LikeDislike";
 
 export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
   const thumbUrl = resp.thumbnail ? get_fiel_url(resp, resp.thumbnail) : null;
@@ -37,9 +38,14 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
           <h2 className="font-bold text-xl sm:text-2xl">
             {resp.title || "Untitled"}
           </h2>
-          <ClientOnly>
-            <BookmarkButton id={resp.id} />
-          </ClientOnly>
+          <div className="flex items-center gap-2 shrink-0">
+            <ClientOnly>
+              <LikeDislike video={resp} />
+            </ClientOnly>
+            <ClientOnly>
+              <BookmarkButton id={resp.id} />
+            </ClientOnly>
+          </div>
         </div>
 
         {/* Owner info */}

@@ -11,6 +11,8 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
+	Likes = "likes",
+	PostReactions = "post_reactions",
 	Profile = "profile",
 	Saved = "saved",
 	Users = "users",
@@ -95,6 +97,25 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
+export type LikesRecord = {
+	created: IsoAutoDateString
+	dislikes_count?: number
+	id: string
+	likes_count?: number
+	updated: IsoAutoDateString
+	video?: RecordIdString
+}
+
+export type PostReactionsRecord = {
+	created: IsoAutoDateString
+	field?: string
+	id: string
+	like_dislike?: number
+	post?: RecordIdString
+	updated: IsoAutoDateString
+	user?: RecordIdString
+}
+
 export type ProfileRecord = {
 	about_me?: HTMLString
 	age?: number
@@ -133,8 +154,10 @@ export type UsersRecord = {
 export type VideosRecord<Ttags = unknown> = {
 	created: IsoAutoDateString
 	description?: HTMLString
+	dislikes_count?: number
 	duration?: number
 	id: string
+	likes_count?: number
 	profile?: RecordIdString
 	resolution?: string
 	tags?: null | Ttags
@@ -151,6 +174,8 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
+export type LikesResponse<Texpand = unknown> = Required<LikesRecord> & BaseSystemFields<Texpand>
+export type PostReactionsResponse<Texpand = unknown> = Required<PostReactionsRecord> & BaseSystemFields<Texpand>
 export type ProfileResponse<Texpand = unknown> = Required<ProfileRecord> & BaseSystemFields<Texpand>
 export type SavedResponse<Texpand = unknown> = Required<SavedRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
@@ -164,6 +189,8 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
+	likes: LikesRecord
+	post_reactions: PostReactionsRecord
 	profile: ProfileRecord
 	saved: SavedRecord
 	users: UsersRecord
@@ -176,6 +203,8 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
+	likes: LikesResponse
+	post_reactions: PostReactionsResponse
 	profile: ProfileResponse
 	saved: SavedResponse
 	users: UsersResponse

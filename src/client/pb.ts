@@ -1,12 +1,9 @@
 import type { TypedPocketBase } from "pocketbase-types";
 import PocketBase from "pocketbase";
 
-export const pb = new PocketBase(
-  "https://6gtpelha4l4d3m8.desto4q.duckdns.org/",
-) as TypedPocketBase;
+const url = import.meta.env.VITE_MAIN_URL;
+export const pb = new PocketBase(url) as TypedPocketBase;
 
 export const server_pb = () => {
-  return new PocketBase(
-    "https://6gtpelha4l4d3m8.desto4q.duckdns.org/",
-  ) as TypedPocketBase;
+  return new PocketBase(url) as TypedPocketBase;
 };
