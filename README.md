@@ -4,12 +4,17 @@ A straightforward video platform — upload, discover, and share videos without 
 
 ## Features
 
-- **Watch & Browse** — Paginated video feed with sort and search
-- **Upload** — Drag-and-drop video upload with title, markdown description, tags, and custom thumbnail
-- **Profile** — View your uploaded videos, saved bookmarks, and profile info
+- **Watch & Browse** — Paginated video feed with sort, title search, and booru-style tag filtering
+- **Upload** — Drag-and-drop video upload with title, markdown description, tags, thumbnail picker, and auto resolution detection
+- **Video Player** — YouTube-like player (react-tuby) with speed control, fullscreen, and keyboard shortcuts
+- **Like / Dislike** — React to videos; counts stored in a dedicated likes collection
 - **Save** — Bookmark videos to your saved collection
+- **Tag Search** — Autocomplete tag search bar with multi-tag AND filtering
+- **Similar Videos** — Sidebar of related videos matched by tags
+- **Profile** — Edit your profile (name, bio, age, country) with rich-text about me; view your uploads and saved videos
 - **Creator pages** — Browse videos by a specific creator
 - **Auth** — Email/password registration and login with persistent sessions
+- **Responsive UI** — Mobile-friendly navbar with slide-out drawer sidebar
 
 ## Tech Stack
 
@@ -18,7 +23,10 @@ A straightforward video platform — upload, discover, and share videos without 
 | Frontend | React, TanStack Start, TanStack Router, TanStack Query |
 | UI | Tailwind CSS v4, DaisyUI v5 |
 | Backend | PocketBase |
+| Video Player | react-tuby |
 | Forms | React Hook Form + Zod |
+| Query Builder | @sergio9929/pb-query |
+| Markdown | react-markdown, @uiw/react-md-editor |
 | Icons | Tabler Icons |
 
 ## Getting Started
@@ -30,13 +38,14 @@ bun --bun run dev
 
 ## Environment Variables
 
-Create a `.env` file in the project root. These are only used for type generation — the PocketBase URL for the runtime client is set directly in `src/client/pb.ts`.
+Create a `.env` file in the project root. The PocketBase URL for the runtime client is read from `VITE_MAIN_URL`.
 
 ```env
-# PocketBase instance URL (used by pocketbase-typegen)
-PB_TYPEGEN_URL=https://your-pocketbase-instance.example.com
+# PocketBase instance URL (runtime)
+VITE_MAIN_URL=https://your-pocketbase-instance.example.com
 
-# Admin credentials (one of email/password OR token)
+# Used by pocketbase-typegen for type generation
+PB_TYPEGEN_URL=https://your-pocketbase-instance.example.com
 PB_TYPEGEN_EMAIL=admin@example.com
 PB_TYPEGEN_PASSWORD=yourpassword
 
@@ -46,7 +55,7 @@ PB_TYPEGEN_PASSWORD=yourpassword
 
 ## Updating PocketBase Types
 
-Whenever you change your PocketBase schema, regenerate `pocketbase-types.ts` so TypeScript stays in sync:
+Whenever you change your PocketBase schema, regenerate `pocketbase-types.ts`:
 
 ```bash
 bunx pocketbase-typegen --url $PB_TYPEGEN_URL --email $PB_TYPEGEN_EMAIL --password $PB_TYPEGEN_PASSWORD --out pocketbase-types.ts
@@ -58,25 +67,14 @@ Or with a token:
 bunx pocketbase-typegen --url $PB_TYPEGEN_URL --token $PB_TYPEGEN_TOKEN --out pocketbase-types.ts
 ```
 
-> To run this without typing the flags each time, add a script to `package.json`:
+> Add to `package.json` for convenience:
 > ```json
 > "typegen": "pocketbase-typegen --url $PB_TYPEGEN_URL --email $PB_TYPEGEN_EMAIL --password $PB_TYPEGEN_PASSWORD --out pocketbase-types.ts"
 > ```
-> Then run it with `bun run typegen`.
+> Then run with `bun run typegen`.
 
 ## Build
 
 ```bash
 bun --bun run build
 ```
-
-## Tests
-
-```bash
-bun --bun run test
-```
-
-## Docs
-
-- [User Guide](./docs/user.md) — Account creation, browsing, and saving videos
-- [Video Upload Guide](./docs/upload.md) — Uploading and managing your videos
