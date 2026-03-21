@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import {
   IconCalendar,
   IconGlobe,
   IconInfoCircle,
+  IconLogout,
   IconUser,
 } from "@tabler/icons-react";
 import { pb } from "#/client/pb";
@@ -22,7 +23,13 @@ function RouteComponent() {
     queryFn: () => pb.send("/profile/me", { method: "GET" }),
   });
 
+  const router = useRouter();
   const { refetch } = query;
+
+  function logout() {
+    pb.authStore.clear();
+    router.navigate({ to: "/" });
+  }
   return (
     <PageLoader query={query}>
       {(resp) => {
@@ -49,12 +56,21 @@ function RouteComponent() {
                     )}
                   </div>
                 </div>
-                <button
-                  className="btn btn-ghost btn-sm"
-                  onClick={() => refetch()}
-                >
-                  Refresh
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => refetch()}
+                  >
+                    Refresh
+                  </button>
+                  <button
+                    className="btn btn-error btn-soft btn-sm gap-1.5"
+                    onClick={logout}
+                  >
+                    <IconLogout size={15} />
+                    Logout
+                  </button>
+                </div>
               </div>
 
               {/* Profile details */}

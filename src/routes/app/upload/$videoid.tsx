@@ -41,7 +41,12 @@ export const Route = createFileRoute("/app/upload/$videoid")({
 const schema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
-  tags: z.string().optional(),
+  tags: z
+    .string()
+    .optional()
+    .refine((v) => !v || /^[\w]+(?:,[\w]+)*$/.test(v.replace(/\s/g, "")), {
+      message: "Tags must be comma-separated words, e.g. action,comedy,short",
+    }),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -74,7 +79,7 @@ function RouteComponent() {
       form.reset({
         title: video.title ?? "",
         description: (video as any).description ?? "",
-        tags: [].concat((video as any).tags ?? []).join(", "),
+        tags: [].concat((video as any).tags ?? []).filter(Boolean).join(","),
       });
     }
   }, [video]);
@@ -103,7 +108,10 @@ function RouteComponent() {
       const fd = new globalThis.FormData();
       fd.append("title", data.title);
       fd.append("description", data.description ?? "");
-      for (const tag of (data.tags ?? "").split(",").map((t) => t.trim()).filter(Boolean))
+      for (const tag of (data.tags ?? "")
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean))
         fd.append("tags", tag);
       if (videoFile) {
         fd.append("video", videoFile, videoFile.name);
@@ -259,7 +267,7 @@ function RouteComponent() {
               <SimpleInput
                 {...form.register("tags")}
                 label="Tags"
-                placeholder="action, comedy, short  (comma separated)"
+                placeholder="action,comedy,short"
               />
             </div>
           </div>

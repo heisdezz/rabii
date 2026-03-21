@@ -38,6 +38,7 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
           <h2 className="font-bold text-xl sm:text-2xl">
             {resp.title || "Untitled"}
           </h2>
+
           <div className="flex items-center gap-2 shrink-0">
             <ClientOnly>
               <LikeDislike video={resp} />
@@ -47,7 +48,19 @@ export default function ItemDetails({ resp }: { resp: VideoWithUser }) {
             </ClientOnly>
           </div>
         </div>
-
+        {(resp as any).tags?.length > 0 && (
+          <div className="flex flex-wrap gap-1 pt-1">
+            {(resp as any).tags.map((tag: string) => (
+              <button
+                key={tag}
+                className="btn btn-xs ring  btn-secondary btn-soft fade"
+              >
+                #{tag}
+              </button>
+            ))}
+          </div>
+        )}
+        {/*{JSON.stringify(resp.expand)}*/}
         {/* Owner info */}
         {user && (
           <Link

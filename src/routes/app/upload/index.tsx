@@ -46,7 +46,12 @@ export const Route = createFileRoute("/app/upload/")({
 const schema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
-  tags: z.string().optional(),
+  tags: z
+    .string()
+    .optional()
+    .refine((v) => !v || /^[\w]+(?:,[\w]+)*$/.test(v.replace(/\s/g, "")), {
+      message: "Tags must be comma-separated words, e.g. action,comedy,short",
+    }),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -231,7 +236,7 @@ function RouteComponent() {
               <SimpleInput
                 {...form.register("tags")}
                 label="Tags"
-                placeholder="action, comedy, short  (comma separated)"
+                placeholder="action,comedy,short"
               />
             </div>
           </div>

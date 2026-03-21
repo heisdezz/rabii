@@ -15,6 +15,7 @@ export enum Collections {
 	PostReactions = "post_reactions",
 	Profile = "profile",
 	Saved = "saved",
+	Tags = "tags",
 	Users = "users",
 	Videos = "videos",
 }
@@ -138,6 +139,13 @@ export type SavedRecord = {
 	video?: RecordIdString
 }
 
+export type TagsRecord = {
+	created: IsoAutoDateString
+	id: string
+	name?: string
+	updated: IsoAutoDateString
+}
+
 export type UsersRecord = {
 	avatar?: FileNameString
 	created: IsoAutoDateString
@@ -151,16 +159,15 @@ export type UsersRecord = {
 	verified?: boolean
 }
 
-export type VideosRecord<Ttags = unknown> = {
+export type VideosRecord = {
 	created: IsoAutoDateString
 	description?: HTMLString
 	dislikes_count?: number
 	duration?: number
 	id: string
 	likes_count?: number
-	profile?: RecordIdString
 	resolution?: string
-	tags?: null | Ttags
+	tags?: RecordIdString[]
 	thumbnail?: FileNameString
 	title?: string
 	updated: IsoAutoDateString
@@ -178,8 +185,9 @@ export type LikesResponse<Texpand = unknown> = Required<LikesRecord> & BaseSyste
 export type PostReactionsResponse<Texpand = unknown> = Required<PostReactionsRecord> & BaseSystemFields<Texpand>
 export type ProfileResponse<Texpand = unknown> = Required<ProfileRecord> & BaseSystemFields<Texpand>
 export type SavedResponse<Texpand = unknown> = Required<SavedRecord> & BaseSystemFields<Texpand>
+export type TagsResponse<Texpand = unknown> = Required<TagsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
-export type VideosResponse<Ttags = unknown, Texpand = unknown> = Required<VideosRecord<Ttags>> & BaseSystemFields<Texpand>
+export type VideosResponse<Texpand = unknown> = Required<VideosRecord> & BaseSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
 
@@ -193,6 +201,7 @@ export type CollectionRecords = {
 	post_reactions: PostReactionsRecord
 	profile: ProfileRecord
 	saved: SavedRecord
+	tags: TagsRecord
 	users: UsersRecord
 	videos: VideosRecord
 }
@@ -207,6 +216,7 @@ export type CollectionResponses = {
 	post_reactions: PostReactionsResponse
 	profile: ProfileResponse
 	saved: SavedResponse
+	tags: TagsResponse
 	users: UsersResponse
 	videos: VideosResponse
 }

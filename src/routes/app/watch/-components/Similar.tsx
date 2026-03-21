@@ -65,8 +65,7 @@ export default function SimilarVideos({
     queryFn: () => {
       if (!tags.length) return Promise.resolve([]);
 
-      const filter = tags.map((t) => `tags ?= "${t}"`).join("&& ");
-      console.log(filter);
+      const filter = tags.map((t) => `tags ~ "${t}"`).join(" || ");
       return pb
         .collection("videos")
         .getList(1, 10, {
