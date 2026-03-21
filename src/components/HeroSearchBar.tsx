@@ -33,21 +33,22 @@ export default function HeroSearchBar() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex items-center w-full max-w-2xl bg-base-100/80 backdrop-blur-md rounded-full shadow-xl ring ring-base-content/10 overflow-hidden px-2 py-2 gap-2"
+      className="flex items-center w-full max-w-2xl bg-base-100/80 backdrop-blur-md rounded-full shadow-xl ring ring-base-content/10 px-2 py-2 gap-2"
     >
       <IconSearch size={20} className="ml-3 text-base-content/40 shrink-0" />
       <input
         {...register("query")}
         type="text"
-        className="flex-1 bg-transparent outline-none text-lg placeholder:text-base-content/30 px-2 py-1"
+        className="flex-1 min-w-0 bg-transparent outline-none text-base placeholder:text-base-content/30 px-2 py-1"
         placeholder="Search for videos..."
         autoComplete="off"
       />
       <button
         type="submit"
-        className="btn btn-primary rounded-full px-6 shrink-0"
+        className="btn btn-primary rounded-full shrink-0 btn-square sm:w-auto sm:px-6"
       >
-        Search
+        <IconSearch size={18} className="sm:hidden" />
+        <span className="hidden sm:inline">Search</span>
       </button>
     </form>
   );
