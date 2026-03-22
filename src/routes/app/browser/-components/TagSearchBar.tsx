@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { IconHash, IconSearch, IconX } from "@tabler/icons-react";
+import { useDebounce } from "use-debounce";
 import { pb } from "#/client/pb";
 import type { TagsResponse } from "pocketbase-types";
 
@@ -9,16 +10,10 @@ interface TagSearchBarProps {
   onChange: (ids: string[]) => void; // emits tag IDs, called only on apply
 }
 
-function useDebounce<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const t = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(t);
-  }, [value, delay]);
-  return debounced;
-}
-
-export default function TagSearchBar({ selected, onChange }: TagSearchBarProps) {
+export default function TagSearchBar({
+  selected,
+  onChange,
+}: TagSearchBarProps) {
   const [local, setLocal] = useState<TagsResponse[]>([]);
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
@@ -31,7 +26,10 @@ export default function TagSearchBar({ selected, onChange }: TagSearchBarProps) 
     queryFn: () => {
       if (!selected.length) return Promise.resolve([]);
       const filter = selected.map((id) => `id = "${id}"`).join(" || ");
-      return pb.collection("tags").getList(1, selected.length, { filter }).then((r) => r.items);
+      return pb
+        .collection("tags")
+        .getList(1, selected.length, { filter })
+        .then((r) => r.items);
     },
     enabled: selected.length > 0,
     onSuccess: (data) => setLocal(data),
@@ -42,7 +40,7 @@ export default function TagSearchBar({ selected, onChange }: TagSearchBarProps) 
     if (selected.length === 0) setLocal([]);
   }, [selected.length]);
 
-  const debouncedInput = useDebounce(input.trim(), 250);
+  const [debouncedInput] = useDebounce(input.trim(), 250);
 
   const { data: suggestions = [] } = useQuery<TagsResponse[]>({
     queryKey: ["tags", "search", debouncedInput],
@@ -191,7 +189,10 @@ export default function TagSearchBar({ selected, onChange }: TagSearchBarProps) 
                     }}
                     className="w-full flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-base-300 transition-colors text-left"
                   >
-                    <IconHash size={12} className="text-base-content/40 shrink-0" />
+                    <IconHash
+                      size={12}
+                      className="text-base-content/40 shrink-0"
+                    />
                     <span>{tag.name}</span>
                   </button>
                 </li>
