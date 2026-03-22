@@ -5,6 +5,7 @@ import {
   IconChevronRight,
   IconPlayerPlay,
   IconUser,
+  IconSparkles,
 } from "@tabler/icons-react";
 import { pb } from "#/client/pb";
 import { useCallback, useEffect, useState } from "react";
@@ -45,11 +46,11 @@ export default function Newest() {
 
   if (query.isLoading) {
     return (
-      <div className="w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9] rounded-sleek bg-base-200 animate-pulse" />
+      <div className="w-full h-[80vh] sm:h-auto sm:aspect-[16/9] md:aspect-[21/9] rounded-sleek bg-base-200 animate-pulse" />
     );
   }
 
-  if (query.isError || !query.data?.length) return null;
+  if (query.isError || !query.data?.length) return <ComingSoonCarousel />;
 
   return (
     <section className="relative">
@@ -91,6 +92,93 @@ export default function Newest() {
   );
 }
 
+const DUMMY_SLIDES = [
+  { label: "Featured Content", blur: "from-primary/20 to-secondary/10" },
+  { label: "Exclusive Videos", blur: "from-secondary/20 to-accent/10" },
+  { label: "Latest Uploads", blur: "from-accent/20 to-primary/10" },
+];
+
+function ComingSoonCarousel() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    return () => { emblaApi.off("select", onSelect); };
+  }, [emblaApi]);
+
+  return (
+    <section className="relative">
+      <div className="overflow-hidden rounded-sleek" ref={emblaRef}>
+        <div className="flex">
+          {DUMMY_SLIDES.map((slide, i) => (
+            <div
+              key={i}
+              className={`relative flex-none w-full h-[80vh] sm:h-auto sm:aspect-[16/9] md:aspect-[21/9] overflow-clip bg-base-300 bg-gradient-to-br ${slide.blur}`}
+            >
+              {/* Decorative blobs */}
+              <div className="absolute top-1/4 left-1/4 w-48 h-48 rounded-full bg-primary/10 blur-3xl" />
+              <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full bg-secondary/10 blur-3xl" />
+              {/* Faint grid pattern */}
+              <div className="absolute inset-0 opacity-5"
+                style={{ backgroundImage: "repeating-linear-gradient(0deg,currentColor,currentColor 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,currentColor,currentColor 1px,transparent 1px,transparent 40px)" }}
+              />
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              {/* Center content */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                <div className="flex items-center gap-2 text-white/30">
+                  <IconSparkles size={18} />
+                  <span className="text-xs uppercase tracking-widest font-semibold">{slide.label}</span>
+                  <IconSparkles size={18} />
+                </div>
+                <p className="text-white/15 font-bold text-4xl sm:text-5xl tracking-tight">Coming Soon</p>
+                <p className="text-white/25 text-sm">No videos have been uploaded yet</p>
+              </div>
+              {/* Bottom label */}
+              <div className="absolute bottom-0 left-0 right-0 px-7 pb-10">
+                <p className="text-white/20 text-xs uppercase tracking-widest font-semibold mb-1">New</p>
+                <div className="h-5 w-48 rounded bg-white/5" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button
+        onClick={scrollPrev}
+        aria-label="Previous"
+        className="absolute left-3 top-1/2 -translate-y-1/2 btn btn-circle bg-black/20 backdrop-blur-md border-0 text-white/40 cursor-default"
+        tabIndex={-1}
+      >
+        <IconChevronLeft size={20} />
+      </button>
+      <button
+        onClick={scrollNext}
+        aria-label="Next"
+        className="absolute right-3 top-1/2 -translate-y-1/2 btn btn-circle bg-black/20 backdrop-blur-md border-0 text-white/40 cursor-default"
+        tabIndex={-1}
+      >
+        <IconChevronRight size={20} />
+      </button>
+
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
+        <Pagination
+          variant="dots"
+          page={selectedIndex}
+          total={DUMMY_SLIDES.length}
+          onChange={(i) => emblaApi?.scrollTo(i)}
+        />
+      </div>
+    </section>
+  );
+}
+
 function HeroSlide({ video }: { video: VideoWithUser }) {
   const thumbUrl = video.thumbnail
     ? get_fiel_url(video, video.thumbnail)
@@ -102,7 +190,7 @@ function HeroSlide({ video }: { video: VideoWithUser }) {
     <Link
       to="/app/watch/$videoid"
       params={{ videoid: video.id }}
-      className="group relative flex-none w-full aspect-[21/9] min-h-56 overflow-clip bg-base-300"
+      className="group relative flex-none w-full h-[80vh] sm:h-auto sm:aspect-[16/9] md:aspect-[21/9] overflow-clip bg-base-300"
     >
       {thumbUrl ? (
         <img
