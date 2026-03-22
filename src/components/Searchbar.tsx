@@ -38,12 +38,12 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex  gap-2">
-      <label className="input input-bordered flex items-center gap-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2 w-full min-w-0">
+      <label className="input input-bordered flex items-center gap-2 flex-1 min-w-0">
         <input
           {...register("query")}
           type="text"
-          className="grow"
+          className="grow min-w-0"
           placeholder="Search..."
         />
       </label>
