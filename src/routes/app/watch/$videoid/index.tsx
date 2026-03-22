@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import WatchScreen from "../-components/Screen";
+import WatchScreen, { VideoBreadcrumb } from "../-components/Screen";
 import ItemDetails from "../-components/ItemDetails";
 import SimilarVideos from "../-components/Similar";
 import { pb } from "#/client/pb";
 import { useQuery } from "@tanstack/react-query";
 
-import type { UsersResponse, VideosResponse } from "pocketbase-types";
+import type {
+  TagsRecord,
+  UsersResponse,
+  VideosResponse,
+} from "pocketbase-types";
 import PageLoader from "#/components/layouts/PageLoader";
 import { ClientOnly } from "@tanstack/react-router";
 
@@ -26,18 +30,22 @@ function RouteComponent() {
   const resp = Route.useLoaderData();
   const { videoid } = Route.useParams();
 
-  const tags: string[] = ((resp as any).expand?.tags ?? []).map((t: { name: string }) => t.name).filter(Boolean);
-
+  const tags: string[] = ((resp as any).expand?.tags ?? [])
+    .map((t: { name: string }) => t.name)
+    .filter(Boolean);
+  //@ts-ignore
+  const new_tags: TagsRecord[] = resp.expand["tags"] ?? [];
   const new_resp = resp;
   return (
     <div className="container mx-auto page-wrap gap-4 flex items-start">
       {/*{JSON.stringify(new_resp)}*/}
       <section className="flex-1 min-w-0 space-y-4">
+        <VideoBreadcrumb title={new_resp.title} />
         <WatchScreen resp={new_resp} />
         <ItemDetails resp={new_resp} />
       </section>
       <aside className="w-80 shrink-0 hidden lg:block">
-        <SimilarVideos tags={tags} excludeId={new_resp.id} />
+        <SimilarVideos tags={new_tags} excludeId={new_resp.id} />
       </aside>
     </div>
   );

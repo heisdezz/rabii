@@ -15,7 +15,7 @@ import { pb } from "#/client/pb";
 import { toast } from "sonner";
 import ThumbnailPicker from "./-components/ThumbnailPicker";
 
-function getVideoResolution(file: File): Promise<string> {
+function getVideoMetadata(file: File): Promise<{ resolution: string; duration: number }> {
   return new Promise((resolve) => {
     const url = URL.createObjectURL(file);
     const vid = document.createElement("video");
@@ -23,18 +23,17 @@ function getVideoResolution(file: File): Promise<string> {
     vid.onloadedmetadata = () => {
       URL.revokeObjectURL(url);
       const h = vid.videoHeight;
-      if (h >= 2160) resolve("4K");
-      else if (h >= 1440) resolve("1440p");
-      else if (h >= 1080) resolve("1080p");
-      else if (h >= 720) resolve("720p");
-      else if (h >= 480) resolve("480p");
-      else if (h >= 360) resolve("360p");
-      else resolve("240p");
+      let resolution = "";
+      if (h >= 2160) resolution = "4K";
+      else if (h >= 1440) resolution = "1440p";
+      else if (h >= 1080) resolution = "1080p";
+      else if (h >= 720) resolution = "720p";
+      else if (h >= 480) resolution = "480p";
+      else if (h >= 360) resolution = "360p";
+      else resolution = "240p";
+      resolve({ resolution, duration: Math.round(vid.duration) });
     };
-    vid.onerror = () => {
-      URL.revokeObjectURL(url);
-      resolve("");
-    };
+    vid.onerror = () => { URL.revokeObjectURL(url); resolve({ resolution: "", duration: 0 }); };
     vid.src = url;
   });
 }
@@ -61,6 +60,7 @@ function RouteComponent() {
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const thumbnailBlobRef = useRef<Blob | null>(null);
   const resolutionRef = useRef<string>("");
+  const durationRef = useRef<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
@@ -83,6 +83,7 @@ function RouteComponent() {
         fd.append("tags", tag);
       fd.append("video", videoFile, videoFile.name);
       if (resolutionRef.current) fd.append("resolution", resolutionRef.current);
+      if (durationRef.current) fd.append("duration", String(durationRef.current));
       fd.append("user", pb.authStore.record!.id);
       if (thumbnailBlobRef.current) {
         fd.append("thumbnail", thumbnailBlobRef.current, "thumbnail.jpg");
@@ -101,14 +102,16 @@ function RouteComponent() {
   const setVideoFileWithPreview = (file: File) => {
     setVideoFile(file);
     setVideoPreview(URL.createObjectURL(file));
-    getVideoResolution(file).then((r) => {
-      resolutionRef.current = r;
+    getVideoMetadata(file).then(({ resolution, duration }) => {
+      resolutionRef.current = resolution;
+      durationRef.current = duration;
     });
   };
 
   const clearVideo = () => {
     thumbnailBlobRef.current = null;
     resolutionRef.current = "";
+    durationRef.current = 0;
     setVideoFile(null);
     if (videoPreview) URL.revokeObjectURL(videoPreview);
     setVideoPreview(null);
